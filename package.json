@@ -1,0 +1,31 @@
+{
+  "name": "node-typescript-template",
+  "version": "1.0.0",
+  "description": "template for node js typescript ",
+  "main": "server.js",
+  "scripts": {
+    "test": " nodemon ./dist/server.js",
+    "start": "node ./dist/server.js",
+    "dev": "concurrently \"tsc --watch\"  \"npm run test\" ",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SANJEET2002/Node-typeScript.git"
+  },
+  "author": "Sanjeet Kumar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SANJEET2002/Node-typeScript/issues"
+  },
+  "homepage": "https://github.com/SANJEET2002/Node-typeScript#readme",
+  "dependencies": {
+    "concurrently": "^7.4.0",
+    "config": "^3.3.8",
+    "express": "^4.18.1",
+    "typescript": "^4.8.4"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.14"
+  }
+}
