@@ -11,14 +11,22 @@ export const generateJwt = (_id: string) => {
   return token;
 };
 
-const verifyToken = (req: Request, res: Response, next: NextFunction) => {
+export const verifyToken = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const header = req.headers["authorization"];
     const token = header?.split(" ")[1];
 
     if (token) {
-      const isValid = jwt.verify(token, process.env.JWT_SECRET_KEY as string);
+      const isValid: any = jwt.verify(
+        token,
+        process.env.JWT_SECRET_KEY as string
+      );
       if (isValid) {
+        req.body._id = isValid._id;
         next();
       } else {
         SendError(res, 401, { error: "not Authorized ", success: false });

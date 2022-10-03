@@ -88,3 +88,23 @@ export const userlogin = async (req: Request, res: Response) => {
     SendError(res, 400, { error: err, success: false });
   }
 };
+
+export const updateUser = async (req: Request, res: Response) => {
+  try {
+    const { username, email, name, _id } = req.body;
+
+    await user.findByIdAndUpdate(_id, {
+      username,
+      email,
+      name,
+    });
+
+    sendResponse(res, 200, { success: true, message: "details Updated" });
+  } catch (err) {
+    SendError(res, 400, {
+      error: err,
+      success: false,
+      message: "failed to Create user",
+    });
+  }
+};
