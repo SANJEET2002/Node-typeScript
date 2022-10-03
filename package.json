@@ -20,16 +20,25 @@
   },
   "homepage": "https://github.com/SANJEET2002/Node-typeScript#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.0",
     "concurrently": "^7.4.0",
     "config": "^3.3.8",
+    "dotenv": "^16.0.3",
     "express": "^4.18.1",
+    "express-validator": "^6.14.2",
+    "js": "^0.1.0",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.6.2",
     "morgan": "^1.10.0",
     "typescript": "^4.8.4"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/config": "^3.3.0",
     "@types/express": "^4.17.14",
+    "@types/jsonwebtoken": "^8.5.9",
     "@types/morgan": "^1.9.3",
     "nodemon": "^2.0.20"
   }
