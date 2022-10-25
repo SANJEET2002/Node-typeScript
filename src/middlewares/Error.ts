@@ -2,7 +2,7 @@ import { Response } from "express";
 
 export interface ErrorBody {
   error: any;
-  message?: string;
+  message?: any;
   success: boolean;
 }
 

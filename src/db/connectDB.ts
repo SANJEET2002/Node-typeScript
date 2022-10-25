@@ -1,12 +1,10 @@
 import mongoose from "mongoose";
-import config from "config";
+import * as dotenv from "dotenv";
 
-const mongodbUrl: string = config.get("dbUrl");
-
-export const connect = async () => {
+export const connect = async (mongodbUrl: string) => {
   try {
     console.log("connecting to dbUrl ", mongodbUrl);
-    await mongoose.connect(mongodbUrl);
+    await mongoose.connect(mongodbUrl as string);
     console.log("connected to mongodb");
   } catch (err) {
     console.log("Shutting down server : unable to connect mongodb database");
