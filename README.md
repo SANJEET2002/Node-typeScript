@@ -28,3 +28,15 @@ Add following ENV variables in .env
     2. PORT
     3. dbUrl
 
+
+## Documentation
+
+To build App
+    1.  yarn build
+
+Run app on Local development server
+    1.  yarn dev
+
+Run app on Production 
+    1. yarn start
+    
