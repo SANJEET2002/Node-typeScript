@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { SendError } from "./Error";
+import { user } from "../models/users.model";
 dotenv.config({ path: "./config/.env" });
 
 export const generateJwt = (_id: string) => {
@@ -11,14 +12,14 @@ export const generateJwt = (_id: string) => {
   return token;
 };
 
-export const verifyToken = (
+export const verifyToken = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const header = req.headers["authorization"];
-    const token = header?.split(" ")[1];
+    // @ts-ignore
+    const token = req.session.token;
 
     if (token) {
       const isValid: any = jwt.verify(
@@ -26,7 +27,10 @@ export const verifyToken = (
         process.env.JWT_SECRET_KEY as string
       );
       if (isValid) {
-        req.body._id = isValid._id;
+        // @ts-ignore
+        req.id = isValid._id;
+        // @ts-ignore
+        req.user = await user.findOne({ _id: isValid.id });
         next();
       } else {
         SendError(res, 401, { error: "not Authorized ", success: false });

@@ -6,7 +6,7 @@
   "scripts": {
     "test": " nodemon ./dist/server.js",
     "start": "node ./dist/server.js",
-    "dev": "concurrently \"tsc --watch\"  \"npm run test\" ",
+    "dev": "tsc && concurrently \"tsc --watch\"  \"npm run test\" ",
     "build": "tsc"
   },
   "repository": {
@@ -26,17 +26,19 @@
     "concurrently": "^7.4.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.1",
-    "express-validator": "^6.14.2",
+    "express-session": "^1.17.3",
     "js": "^0.1.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.6.2",
     "morgan": "^1.10.0",
-    "typescript": "^4.8.4"
+    "typescript": "^4.8.4",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/config": "^3.3.0",
     "@types/express": "^4.17.14",
+    "@types/express-session": "^1.17.5",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/morgan": "^1.9.3",
     "nodemon": "^2.0.20"
