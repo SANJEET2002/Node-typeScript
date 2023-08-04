@@ -1,15 +1,14 @@
 import { Response } from "express";
+import { z } from "zod";
 
-export interface ErrorBody {
-  error: any;
-  message?: any;
-  success: boolean;
-}
+export const ErrorSchema = z.object({
+  status_code: z.number().default(500).optional(),
+  error: z.any(),
+  message: z.string(),
+  success: z.boolean(),
+});
+export type ErrorBody = z.infer<typeof ErrorSchema>;
 
-export const SendError = (
-  res: Response,
-  errorCode: number,
-  data: ErrorBody
-) => {
-  return res.status(errorCode || 400).send(data);
+export const SendError = (res: Response, data: ErrorBody) => {
+  return res.status(data.status_code || 400).send(data);
 };

@@ -4,25 +4,16 @@ import { sendResponse } from "../middlewares/response";
 import { user } from "../models/users.model";
 import bcrypt from "bcrypt";
 import { generateJwt } from "../middlewares/auth";
-import jwt from "jsonwebtoken";
 
 export const newUser = async (req: Request, res: Response) => {
   try {
-    const { username, name, password, email } = req.body;
-    const checkUsername = await user.findOne({ username: username });
-
-    if (checkUsername) {
-      return SendError(res, 400, {
-        success: false,
-        message: "username not Available",
-        error: "username is taken ",
-      });
-    }
+    const { name, password, email } = req.body;
 
     const checkEmail = await user.findOne({ email: email });
 
     if (checkEmail) {
-      return SendError(res, 400, {
+      return SendError(res, {
+        status_code: 401,
         success: false,
         message: "email Id already in use",
         error: "email is taken",
@@ -38,13 +29,15 @@ export const newUser = async (req: Request, res: Response) => {
       email: email,
     });
 
-    sendResponse(res, 200, {
+    sendResponse(res, {
+      status_code: 200,
       success: true,
       message: "user created Succesfully",
     });
   } catch (err) {
     console.log(err);
-    SendError(res, 400, {
+    SendError(res, {
+      status_code: 500,
       error: err,
       success: false,
       message: "failed to Create user",
@@ -56,7 +49,7 @@ export const userlogin = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
-    const userDetails: any = await user.findOne({
+    const userDetails = await user.findOne({
       email,
     });
     if (userDetails) {
@@ -66,29 +59,27 @@ export const userlogin = async (req: Request, res: Response) => {
       );
 
       if (!isPassswordCorrect) {
-        return SendError(res, 401, {
+        return SendError(res, {
+          status_code: 401,
           success: false,
           message: "Incorrect Password",
           error: "incorrect password ",
         });
       }
 
-      // if (!userDetails.isVerified) {
-      //   return SendError(res, 401, {
-      //     success: false,
-      //     error: "Email  not verified",
-      //     message: {
-      //       message: "Please Verify your email",
-      //       email: userDetails.email,
-      //     },
-      //   });
-      // }
+      if (!userDetails.is_verified) {
+        return SendError(res, {
+          status_code: 401,
+          success: false,
+          error: "Email  not verified",
+          message: "user Email not verfied",
+        });
+      }
 
-      const token = generateJwt(userDetails._id);
       //@ts-ignore
-      req.session.token = token;
+      const token = generateJwt(userDetails._id as string);
 
-      sendResponse(res, 200, {
+      sendResponse(res, {
         success: true,
         token: token,
         data: {
@@ -98,7 +89,8 @@ export const userlogin = async (req: Request, res: Response) => {
         },
       });
     } else {
-      return SendError(res, 400, {
+      return SendError(res, {
+        status_code: 400,
         success: false,
         message: "no user Found",
         error: "invalid Username ",
@@ -106,7 +98,8 @@ export const userlogin = async (req: Request, res: Response) => {
     }
   } catch (err) {
     console.log(err);
-    SendError(res, 400, {
+    SendError(res, {
+      status_code: 400,
       error: err,
       success: false,
       message: "inable  to Process Request ",
@@ -116,20 +109,19 @@ export const userlogin = async (req: Request, res: Response) => {
 
 export const updateUser = async (req: Request, res: Response) => {
   try {
-    const { username, email, name, _id } = req.body;
+    const { email, name, _id } = req.body;
 
     await user.findByIdAndUpdate(_id, {
-      username,
       email,
       name,
     });
 
-    sendResponse(res, 200, { success: true, message: "details Updated" });
+    sendResponse(res, { success: true, message: "details Updated" });
   } catch (err) {
-    SendError(res, 400, {
+    SendError(res, {
       error: err,
       success: false,
-      message: "failed to Create user",
+      message: "failed to Update user",
     });
   }
 };
@@ -143,14 +135,16 @@ export const authMe = async (req: Request, res: Response) => {
     const userDetails: any = await user.findOne({ _id: req.id });
 
     if (!userDetails) {
-      return SendError(res, 403, {
+      return SendError(res, {
+        status_code: 403,
         success: false,
         error: "no user Found ",
         message: "try again ",
       });
     }
 
-    sendResponse(res, 200, {
+    sendResponse(res, {
+      status_code: 200,
       success: true,
       data: {
         name: userDetails.name,
@@ -160,9 +154,10 @@ export const authMe = async (req: Request, res: Response) => {
     });
   } catch (err) {
     console.log(err);
-    SendError(res, 400, {
+    SendError(res, {
+      status_code: 500,
       success: false,
-      message: "inable to verify user ",
+      message: "Unable to verify user ",
       error: err,
     });
   }

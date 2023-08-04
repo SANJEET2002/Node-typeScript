@@ -1,16 +1,12 @@
-import * as yup from "yup";
+import { z } from "zod";
 
-export const newUserSchema = yup.object({
-  username: yup.string().required("username required"),
-  email: yup.string().required("email required").email("invalid email address"),
-  name: yup.string().required("name required"),
-  password: yup.string().required("password required"),
+export const newUserSchema = z.object({
+  email: z.string().email("invalid email address"),
+  name: z.string(),
+  password: z.string().min(6, "password should be grater than 6 characters"),
 });
 
-export const login = yup.object({
-  email: yup
-    .string()
-    .required("email addres required")
-    .email("invalid email address"),
-  password: yup.string().required("password required"),
+export const login = z.object({
+  email: z.string().email("invalid email address"),
+  password: z.string(),
 });

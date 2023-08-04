@@ -1,20 +1,15 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
+import { User } from "./types";
 
-export interface User {
-  name: string;
-  username: string;
-  password: string;
-  role: string;
-  email: string;
-}
+type UserModal = User & mongoose.Document;
 
-const userSchema = new Schema<User>(
+const userSchema = new Schema<UserModal>(
   {
     name: { type: String, required: [true, "provide name "] },
-    username: { type: String, required: [true, "provide username"] },
-    password: { type: String, required: [true, "provide password"] },
-    role: { type: String },
     email: { type: String, required: [true, "provide user email "] },
+    password: { type: String, required: [true, "provide password"] },
+    role: { type: String, enum: ["ADMIN", "USER"] },
+    is_verified: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

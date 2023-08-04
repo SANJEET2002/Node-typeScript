@@ -1,14 +1,22 @@
-import * as yup from "yup";
+import { z } from "zod";
 import { NextFunction, Request, Response } from "express";
+import { SendError } from "../middlewares/Error";
 
 export const ValidateBodySchema =
-  (schema: yup.AnyObjectSchema) =>
+  (schema: z.AnyZodObject) =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await schema.validate(req.body, { abortEarly: false });
+      const body = schema.parse(req.body);
+      req.body = body;
       next();
     } catch (err: any) {
-      res.status(403).send({ err: err.errors , path : err.inner });
+      console.log(err);
+      SendError(res, {
+        status_code: 403,
+        success: false,
+        message: "Validation failed",
+        error: err.message,
+      });
       console.log({ err });
     }
   };

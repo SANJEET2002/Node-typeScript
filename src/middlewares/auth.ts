@@ -19,7 +19,9 @@ export const verifyToken = async (
 ) => {
   try {
     // @ts-ignore
-    const token = req.session.token;
+    let token = req.headers.authorization?.split(" ")[1] as string;
+
+    console.log({ token });
 
     if (token) {
       const isValid: any = jwt.verify(
@@ -33,13 +35,23 @@ export const verifyToken = async (
         req.user = await user.findOne({ _id: isValid.id });
         next();
       } else {
-        SendError(res, 401, { error: "not Authorized ", success: false });
+        SendError(res, {
+          status_code: 401,
+          error: "JWT expired",
+          success: false,
+          message: "User Authorization failed",
+        });
       }
     } else {
-      SendError(res, 401, { error: "not Authorized ", success: false });
+      SendError(res, {
+        status_code: 401,
+        error: "No JWT token found",
+        success: false,
+        message: "User Authorization failed",
+      });
     }
   } catch (err) {
-    SendError(res, 401, {
+    SendError(res, {
       error: err,
       success: false,
       message: "not Authorised",

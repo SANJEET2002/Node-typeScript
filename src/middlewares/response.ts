@@ -1,17 +1,17 @@
 import { Response } from "express";
+import { z } from "zod";
 
-export interface ResponseBody {
-  success: boolean;
-  data?: any;
-  count?: number;
-  message?: string;
-  token?: string;
-}
+const ResponseBodySchema = z.object({
+  status_code: z.number().default(200).optional(),
+  success: z.boolean(),
+  data: z.any().optional(),
+  count: z.number().optional(),
+  message: z.string().optional(),
+  token: z.string().optional(),
+});
 
-export const sendResponse = (
-  res: Response,
-  responseCode: number,
-  responseBody: ResponseBody
-) => {
-  return res.status(responseCode || 200).send(responseBody);
+export type ResponseBody = z.infer<typeof ResponseBodySchema>;
+
+export const sendResponse = (res: Response, responseBody: ResponseBody) => {
+  return res.status(responseBody.status_code || 200).send(responseBody);
 };
