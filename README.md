@@ -9,7 +9,6 @@ This project is configured with Typescript & Node.
     4. user token verification
 
 
-
 ## Installation
 
 Install my-project with yarn 

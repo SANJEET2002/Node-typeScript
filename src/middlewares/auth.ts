@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import { SendError } from "./Error";
 import { user } from "../models/users.model";
+import { sendResponse } from "./response";
 dotenv.config({ path: "./config/.env" });
 
 export const generateJwt = (_id: string) => {
@@ -32,7 +33,7 @@ export const verifyToken = async (
         // @ts-ignore
         req.id = isValid._id;
         // @ts-ignore
-        req.user = await user.findOne({ _id: isValid.id });
+        req.user = await user.findOne({ _id: isValid._id });
         next();
       } else {
         SendError(res, {
@@ -57,4 +58,51 @@ export const verifyToken = async (
       message: "not Authorised",
     });
   }
+};
+
+export const authorize =
+  (roles: IRoles) => (req: Request, res: Response, next: NextFunction) => {
+    try {
+      //@ts-ignore
+      const user = req?.user;
+
+      if (!user) {
+        return SendError(res, {
+          status_code: 403,
+          success: false,
+          message: "Access denied",
+        });
+      }
+      if (roles.includes(user.role)) {
+        next();
+      } else {
+        sendResponse(res, {
+          status_code: 403,
+          success: false,
+          message: "forbiden",
+        });
+      }
+    } catch (err) {
+      console.log(err);
+      SendError(res, {
+        status_code: 403,
+        message: "access denied",
+        success: false,
+      });
+    }
+  };
+
+export const validateSocketToken = (token: string) => {
+  return new Promise((res, rej) => {
+    const isValid: any = jwt.verify(
+      token,
+      process.env.JWT_SECRET_KEY as string
+    );
+
+    if (isValid) {
+      res(true);
+    } else {
+      rej(false);
+    }
+  });
 };
